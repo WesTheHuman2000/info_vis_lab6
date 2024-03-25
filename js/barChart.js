@@ -103,6 +103,7 @@ class BarChart {
     renderVis() {
         let vis = this;
         
+        
         // Todos
         const bars = vis.chart.selectAll('.bar')
             .data(vis.aggregatedData)
@@ -136,7 +137,9 @@ class BarChart {
                 d3.select(this).attr('stroke', 'none');
             })
            .on('click', function(event, d){
-            d3.select(this).attr('stroke', 'black');
+                const selectedSpecies = [d.key]
+                console.log(selectedSpecies)
+                d3.select(this).attr('stroke', 'black');
            })
 
 
