@@ -62,14 +62,14 @@ export class ParallelCoordinates {
 
         vis.x = d3.scalePoint()
             .range([0,vis.width])
-            .padding(1)
+            // .padding(1)
             .domain(vis.keys)
         // Todo: append axis groups
         vis.path = function(d){
             return d3.line()(vis.keys.map(p=>[vis.x(p), vis.y[p](d[p])]))
         }
         // Todo: append axis titles (each axis should contain 1 title)
-        vis.svg.selectAll('.axis')
+        vis.chart.selectAll('.axis')
             .data(vis.keys).enter()
             .append('g')
             .attr('transform', function(d) {return "translate(" + vis.x(d) + ")";})

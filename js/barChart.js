@@ -124,7 +124,10 @@ class BarChart {
             .attr('width', vis.xScale.bandwidth())
             //.attr('height', d => vis.height - vis.yScale(d))
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
-            .attr('fill', d => vis.colorScale(d.species))
+            // .attr('fill', d => {
+            //     console.log(d)
+            // })
+            .attr('fill', d => vis.colorScale(d.key))
             .attr('stroke', 'none')
             .on('mouseover', function(event, d) {
                 d3.select(this).attr('stroke', 'black');
