@@ -21,6 +21,7 @@ class BarChart {
         };
         this.data = _data;
         this.colorScale = _colorScale;
+        this.parallelSelectedSpecies = null;
         this.initVis();
     }
     
@@ -32,6 +33,14 @@ class BarChart {
 
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
+
+        // add event listener to establish communication from parallel to bar
+        document.addEventListener('speciesHovered', (parallel_hover_event) => {
+            this.parallelSelectedSpecies = parallel_hover_event.detail.species;
+            
+            this.updateVis();
+            
+        });
 
         vis.svg = d3.select(vis.config.parentElement)
             .append('svg')
@@ -111,17 +120,22 @@ class BarChart {
             .attr('class', 'bar')
             .attr('x', d => vis.xScale(vis.xValue(d)))
             .attr('y', d=>{
-                console.log("Data Point:", d);
+                
                 const yValue = vis.yScale(vis.yValue(d))
                 return yValue;
             })
-         
             .attr('width', vis.xScale.bandwidth())
-            //.attr('height', d => vis.height - vis.yScale(d))
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
             
             .attr('fill', d => vis.colorScale(d.key))
             .attr('stroke', 'none')
+            .style('opacity', d=>{
+                if(!this.parallelSelectedSpecies || d.key === this.parallelSelectedSpecies){
+                    return 1;
+                } else{
+                    return .3;
+                }
+            })
             .on('mouseover', function(event, d) {
                 d3.select(this).attr('stroke', 'black');
             })
@@ -143,8 +157,10 @@ class BarChart {
 
                 d3.select(this).attr('stroke', 'black');
            })
+           
+           
 
-
+           
         vis.xAxisG.call(vis.xAxis);
         vis.yAxisG.call(vis.yAxis);
     }
