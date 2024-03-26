@@ -103,7 +103,7 @@ class BarChart {
     renderVis() {
         let vis = this;
         
-        
+        let filtered = false;
         // Todos
         const bars = vis.chart.selectAll('.bar')
             .data(vis.aggregatedData)
@@ -129,12 +129,17 @@ class BarChart {
                 d3.select(this).attr('stroke', 'none');
             })
            .on('click', function(event, d){
-                const selectedSpecies = d.key
-                console.log(selectedSpecies)
-
+                let selectedSpecies = d.key
+                filtered = !filtered;
+                if(filtered){
+                    console.log('filter from bar true',filtered)
+                    selectedSpecies = null
+                    
+                    
+                } 
                 //custom event to listen to the species selected and establish communication between bar and parallel
-                const custom_event = new CustomEvent('speciesSelected', { detail: { species: selectedSpecies } });
-                document.dispatchEvent(custom_event);
+                const bar_filter_event = new CustomEvent('speciesSelected', { detail: { species: selectedSpecies } });
+                document.dispatchEvent(bar_filter_event);
 
                 d3.select(this).attr('stroke', 'black');
            })
