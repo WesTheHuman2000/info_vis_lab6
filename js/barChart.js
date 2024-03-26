@@ -115,19 +115,11 @@ class BarChart {
                 const yValue = vis.yScale(vis.yValue(d))
                 return yValue;
             })
-            //.attr('x', d =>vis.xScale(d.species))
-           // .attr('y', d=>vis.yScale(vis.yValue(d.count)))
-           // .attr('y', d=>{
-           //     console.log("Data Point:", d);
-           //     const yValue = vis.yScale(vis.yValue(d))
-           //     return yValue;
-           // })
+         
             .attr('width', vis.xScale.bandwidth())
             //.attr('height', d => vis.height - vis.yScale(d))
             .attr('height', d => vis.height - vis.yScale(vis.yValue(d)))
-            // .attr('fill', d => {
-            //     console.log(d)
-            // })
+            
             .attr('fill', d => vis.colorScale(d.key))
             .attr('stroke', 'none')
             .on('mouseover', function(event, d) {
@@ -137,8 +129,13 @@ class BarChart {
                 d3.select(this).attr('stroke', 'none');
             })
            .on('click', function(event, d){
-                const selectedSpecies = [d.key]
+                const selectedSpecies = d.key
                 console.log(selectedSpecies)
+
+                //custom event to listen to the species selected and establish communication between bar and parallel
+                const custom_event = new CustomEvent('speciesSelected', { detail: { species: selectedSpecies } });
+                document.dispatchEvent(custom_event);
+
                 d3.select(this).attr('stroke', 'black');
            })
 

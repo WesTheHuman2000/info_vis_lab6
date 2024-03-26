@@ -22,7 +22,8 @@ export class ParallelCoordinates {
         };
         this.data = _data;
         this.colorScale = _colorScale;
-        
+
+        this.selectedSpecies = null;
         this.keys = ['culmen_length_mm', 'culmen_depth_mm', 'flipper_length_mm', 'body_mass_g'];
         this.data.forEach(d => {
             this.keys.forEach(key => {
@@ -42,7 +43,15 @@ export class ParallelCoordinates {
 
         vis.width = vis.config.containerWidth - vis.config.margin.left - vis.config.margin.right;
         vis.height = vis.config.containerHeight - vis.config.margin.top - vis.config.margin.bottom;
-
+        
+        //establsih communcation with barchart and listens for species
+        document.addEventListener('speciesSelected', (custom_event) => {
+            this.selectedSpecies = custom_event.detail.species;
+            
+            console.log('Selected Species:', this.selectedSpecies);
+            this.updateVis();
+            
+        });
         vis.svg = d3.select(vis.config.parentElement)
             .append('svg')
             .attr('width', vis.config.containerWidth)
@@ -92,7 +101,7 @@ export class ParallelCoordinates {
      */
     updateVis() {
         let vis = this;
-
+        console.log('selected species from parallel' + this.selectedSpecies)
         // Todo
 
         vis.renderVis();
@@ -111,8 +120,26 @@ export class ParallelCoordinates {
         .attr("class", d => "path " + d.species) 
         .attr("d", vis.path)
         .style("fill", "none")
-        .style("stroke", d => vis.colorScale(d.species))
-        .style("opacity", 0.5);
+        .style("stroke", d => {
+            // If species is selected or no species is selected, keep original color
+            // Otherwise, set stroke color to white
+            console.log('selected species from parallel ' + this.selectedSpecies)
+            if (!this.selectedSpecies || d.species === this.selectedSpecies) {
+                return vis.colorScale(d.species);
+            } else {
+                return "white";
+            }
+        })
+        //.style("stroke", d => vis.colorScale(d.species))
+        .style("opacity", d => {
+            // Adjust opacity based on selection
+            if (!this.selectedSpecies || d.species === this.selectedSpecies) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+        // .style("opacity", 0.5);
         // Todo
     }
 }
